@@ -26,3 +26,6 @@ Anaconda Prompt を推奨します。
 
 布留川英一(2019) 『AlphaZero 深層学習・強化学習・探索 人工知能プログラミング実践入門』 ボーンデジタル.  
 https://www.borndigital.co.jp/book/14383.html  
+
+八谷大岳, 杉山将(2008) 『強くなるロボティック・ゲームプレイヤーの作り方　プレミアムブックス版』株式会社マイナビ出版.  
+https://book.mynavi.jp/supportsite/detail/9784839956738.html  
