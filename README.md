@@ -2,10 +2,14 @@
 pythonでTicTacToeを作成.
 
 ## ファイル構成
-├─ main.py       # シミュレーション.  
-├─ player_ai.py  # ゲームAI.指定したアルゴリズムで行動を決定.  
-├─ statevalue.py # 指定したアルゴリズムで状態価値を決定.  
-└─ tictactoe.py  # クラスStateを定義.  
+~~~
+.
+├─── README.md
+├─── main.py       # シミュレーション.  
+├─── player_ai.py  # ゲームAI.指定したアルゴリズムで行動を決定.  
+├─── statevalue.py # 指定したアルゴリズムで状態価値を決定.  
+└─── tictactoe.py  # クラスStateを定義.  
+~~~
 
 ## 推奨環境
 Anaconda Prompt を推奨します。
@@ -17,7 +21,11 @@ Anaconda Prompt を推奨します。
 1. Anaconda Prompt を実行
 1. Promptに"python "と入力. (行末のスペースを忘れずに!)
 1. ダウンロードしたTicTacToe_pyから、main.pyをAnaconda Promptにドラック&ドロップしてください.
-1. Promptには、"phtyon [パス]/main.py"となっているはずです。そのままEnterで実行できます.
+1. Promptは以下のようになっているはずです。
+   ~~~
+   phtyon [パス]/main.py
+   ~~~
+   そのままEnterで実行できます.
 
 1. main.pyを書き換えることで、MiniMaxプレイヤー同士のゲームを見ることができます!  
 ※ 書き換え済みverは、"players_are_MiniMax"ブランチからダウンロードできます.
