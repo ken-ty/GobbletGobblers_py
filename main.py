@@ -16,12 +16,15 @@ state = tic.State()
 player = pow(-1, random.randint(0,1) )
 
 # ゲーム終了までループ。（Stateクラスのis_doneで確認）
-while ( state.is_done() != True ) :    
-    # p1の行動選択
+while ( state.is_done() != True ) :   
+    # playerの入れ替え(playerは1,-1で切り替え)
+    player *= -1
+    
+    # playerAの行動選択
     if player == 1:
         print("Random Player\n" )
         action = ai.action( state, mode="Random" )
-    # p2の行動選択
+    # playerBの行動選択
     # if player == -1:
     else:
         print("MiniMax Player\n" )
@@ -33,7 +36,4 @@ while ( state.is_done() != True ) :
     # 表示
     print( state )
     print("")
-    
-    # playerの入れ替え(playerは1,-1で切り替え)
-    player *= -1
     
