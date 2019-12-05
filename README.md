@@ -22,7 +22,7 @@ Anaconda Prompt を推奨します。
 
 ## 実行方法
 1. Anaconda https://www.anaconda.com/ をインストール.
-1. TicTacToe_pyをダウンロード.
+1. リリース https://github.com/kentokura/TicTacToe_py/releases からバージョンを選んでTicTacToe_pyをダウンロード.
 1. Anaconda Prompt を実行
 1. Promptに"python "と入力. (行末のスペースを忘れずに!)
 1. ダウンロードしたTicTacToe_pyから、main.pyをAnaconda Promptにドラック&ドロップしてください.
