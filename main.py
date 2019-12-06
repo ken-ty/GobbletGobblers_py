@@ -1,39 +1,74 @@
-"""行動を変えてみよう
-ai.action(state, mode="ココ！")
-modeの一覧:
-    Random:  ランダムな行動選択
-    MiniMax: MiniMaxで計算した価値に基づいて行動選択
-"""
-
 import tictactoe as tic # クラスStateを定義.
 import player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
 import random
 
-# 3目並べの状態を保持するクラス"State"を初期化する。
-state = tic.State()
+# パラメータ
+EP_GAME_COUNT = 100 # 1評価当たりのゲーム数
 
-# ファーストプレイヤーの抽選
-player = pow(-1, random.randint(0,1) )
+def first_player_point(ended_state):
+    """先手プレイヤーのポイント
+    """
+    # 1:先手勝利, 0: 先手敗北, 0.5, 引分け
+    if ended_state.is_lose():
+        return 0 if ended_state.is_first_player() else 1
+    return 0.5
 
-# ゲーム終了までループ。（Stateクラスのis_doneで確認）
-while ( state.is_done() != True ) :   
-    # playerの入れ替え(playerは1,-1で切り替え)
-    player *= -1
+def play(action_modes):
+    """1ゲームの実行
+    """
+    # 3目並べの状態を保持するクラス"State"を初期化する。
+    state = tic.State()
+
+    # ゲーム終了までループ。（Stateクラスのis_doneで確認）
+    while ( state.is_done() != True ) :   
+        # 行動の取得
+        action_mode = action_modes[0] if state.is_first_player() else action_modes[1]
+        action = ai.action(state, action_mode)
+
+        # 行動を状態に反映させた次の状態に更新する。
+        state = state.next( action )
+
+    # 先手プレイヤーのポイントを返す
+    return first_player_point(state)
+
+
+def evaluate_algorithm_of(label, action_modes):
+    """任意のアルゴリズムの評価
+    """
+    # 複数回の対戦を繰り返す
+    total_point = 0
+    total_win = 0
+    total_lose = 0
+    total_draw= 0
+    point = 0
+    for i in range(EP_GAME_COUNT):
+        # 1ゲームの実行
+        # 交互に先手後手を入れ替えている。
+        if i % 2 == 0:
+            point = play(action_modes)
+        else:
+            point = 1 - play(list(reversed(action_modes)))
+        # win,lose,drawをカウントする
+        total_point += point
+        if point == 1:
+            total_win  += 1
+        elif point == 0.5:
+            total_draw += 1
+        elif point == 0:
+            total_lose += 1
+        # 出力
+        print('\rEvaluate {}/{} '.format(i + 1, EP_GAME_COUNT), end='')
+    print('')
     
-    # playerAの行動選択
-    if player == 1:
-        print("Random Player\n" )
-        action = ai.action( state, mode="Random" )
-    # playerBの行動選択
-    # if player == -1:
-    else:
-        print("MiniMax Player\n" )
-        action = ai.action( state, mode="MiniMax" )
-        
-    # 行動を状態に反映させた次の状態に更新する。
-    state = state.next( action )
+    # 平均ポイントの計算
+    average_point = total_point / EP_GAME_COUNT
+    print(label.format(average_point),end='')
+    print(' (win {}, lose {}, draw {})'.format(total_win, total_lose, total_draw))
 
-    # 表示
-    print( state )
-    print("")
-    
+# ミニマックスVSミニマックス
+action_modes = ("MiniMax","MiniMax")
+evaluate_algorithm_of('MiniMax_VS_MiniMax {:.3f}', action_modes)
+
+# ミニマックスVSランダム
+action_modes = ("MiniMax","Random")
+evaluate_algorithm_of('MiniMax_VS_Random {:.3f}', action_modes)
