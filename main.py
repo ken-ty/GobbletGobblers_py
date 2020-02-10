@@ -1,4 +1,4 @@
-import tictactoe as tic # クラスStateを定義.
+import tictactoe as game # クラスStateを定義.
 import player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
 import random
 
@@ -17,7 +17,7 @@ def play(action_modes):
     """1ゲームの実行
     """
     # 3目並べの状態を保持するクラス"State"を初期化する。
-    state = tic.State()
+    state = game.State()
 
     # ゲーム終了までループ。（Stateクラスのis_doneで確認）
     while ( state.is_done() != True ) :   
