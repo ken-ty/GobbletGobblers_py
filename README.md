@@ -2,7 +2,8 @@
 [![license](https://img.shields.io/github/license/kentokura/TicTacToe_py)](./LICENSE)
 
 このリポジトリは[TicTacToe](https://github.com/kentokura/TicTacToe)の派生です。  
-派生元のリポジトリはCで実装されています。また、AIの種類が異なります。
+派生元のリポジトリはCで実装されています。また、AIの種類が異なり、NPCと対戦することができます。
+このリポジトリの3目並べは観賞用です。
 
 pythonでTicTacToeの必勝法を調査する。  
 必勝法である「ゲーム木の全探索」を、NegaMax法で実装したプレイヤーに対して、対戦結果を確認した。
