@@ -179,7 +179,7 @@ class State:
         return actions
 
     def is_first_player(self):
-        """先手化どうか
+        """先手かどうか
 
     Returns:
       bool: 先手ならTrue, 後手ならFalse.
