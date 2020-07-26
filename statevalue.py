@@ -1,7 +1,4 @@
-import random
-import tictactoe as tic
-
-def mini_max( state ):
+def mini_max(state):
     """ミニマックスで状態の価値を計算する.
     """
     # 負けは状態価値-1
@@ -21,4 +18,3 @@ def mini_max( state ):
             best_score = score
     # 合法手の状態価値の最大値を返す
     return best_score
-

@@ -1,9 +1,9 @@
-import tictactoe as game # クラスStateを定義.
+import gobbletgobblers as game  # クラスStateを定義.
 import player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
-import random
 
 # パラメータ
-EP_GAME_COUNT = 100 # 1評価当たりのゲーム数
+EP_GAME_COUNT = 1  # 1評価当たりのゲーム数
+
 
 def first_player_point(ended_state):
     """先手プレイヤーのポイント
@@ -13,6 +13,7 @@ def first_player_point(ended_state):
         return 0 if ended_state.is_first_player() else 1
     return 0.5
 
+
 def play(action_modes):
     """1ゲームの実行
     """
@@ -20,13 +21,16 @@ def play(action_modes):
     state = game.State()
 
     # ゲーム終了までループ。（Stateクラスのis_doneで確認）
-    while ( state.is_done() != True ) :   
+    while not state.is_done():
         # 行動の取得
         action_mode = action_modes[0] if state.is_first_player() else action_modes[1]
         action = ai.action(state, action_mode)
 
         # 行動を状態に反映させた次の状態に更新する。
-        state = state.next( action )
+        state = state.next(action)
+
+        print(state)
+        print()
 
     # 先手プレイヤーのポイントを返す
     return first_player_point(state)
@@ -39,7 +43,7 @@ def evaluate_algorithm_of(label, action_modes):
     total_point = 0
     total_win = 0
     total_lose = 0
-    total_draw= 0
+    total_draw = 0
     point = 0
     for i in range(EP_GAME_COUNT):
         # 1ゲームの実行
@@ -51,24 +55,25 @@ def evaluate_algorithm_of(label, action_modes):
         # win,lose,drawをカウントする
         total_point += point
         if point == 1:
-            total_win  += 1
+            total_win += 1
         elif point == 0.5:
             total_draw += 1
         elif point == 0:
             total_lose += 1
         # 出力
-        print('\rEvaluate {}/{} '.format(i + 1, EP_GAME_COUNT), end='')
+        print("\rEvaluate {}/{} ".format(i + 1, EP_GAME_COUNT), end='')
     print('')
-    
+
     # 平均ポイントの計算
     average_point = total_point / EP_GAME_COUNT
-    print(label.format(average_point),end='')
+    print(label.format(average_point), end='')
     print(' (win {}, lose {}, draw {})'.format(total_win, total_lose, total_draw))
 
+
 # ミニマックスVSミニマックス
-action_modes = ("MiniMax","MiniMax")
+action_modes = ("MiniMax", "MiniMax")
 evaluate_algorithm_of('MiniMax_VS_MiniMax {:.3f}', action_modes)
 
-# ミニマックスVSランダム
-action_modes = ("MiniMax","Random")
-evaluate_algorithm_of('MiniMax_VS_Random {:.3f}', action_modes)
+# # ミニマックスVSランダム
+# action_modes = ("MiniMax", "Random")
+# evaluate_algorithm_of('MiniMax_VS_Random {:.3f}', action_modes)
