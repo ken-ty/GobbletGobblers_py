@@ -1,16 +1,22 @@
-# TicTacToe_py
-[![license](https://img.shields.io/github/license/kentokura/TicTacToe_py)](./LICENSE)
+# GobbletGobblers_py
 
-このリポジトリは[TicTacToe](https://github.com/kentokura/TicTacToe)の派生です。  
-派生元のリポジトリはCで実装されています。また、AIの種類が異なり、NPCと対戦することができます。
-このリポジトリの3目並べは結果確認のみです。
+[![license](https://img.shields.io/github/license/kentokura/GobbletGobblers_py?style=social)](./LICENSE)
 
-pythonでTicTacToeの必勝法を調査する。  
-必勝法である「ゲーム木の全探索」を、NegaMax法で実装したプレイヤーに対して、対戦結果を確認した。
-* 同じアルゴリズムのプレイヤーと対戦
-* ランダムに行動するプレイヤーと対戦
 
-100回ずつ対戦し、勝ちなら1,負けなら0, 引分けなら0.5をカウントした。つまり、全勝なら100,全敗なら0,全部引分なら50になる。
+## このリポジトリについて
+
+GobbletGobblers_pyはGobbletGobblersの解析を行うCUIを作成しています。
+ただし、ゲームは簡単の為に以下のルールで行います。
+
+* 一度おいたコマを動かすことはできない
+* コマは大と小のみである
+
+### 派生元リポジトリ
+
+このリポジトリは[TicTacToe_py](https://github.com/kentokura/TicTacToe_py)の派生です。  
+派生元のリポジトリではpythonでGobbletGobblers_pyの必勝法を調査しています。
+必勝法である「ゲーム木の全探索」を、NegaMax法で実装したプレイヤーに対して、対戦結果を確認しています。
+
 
 
 ## ファイル構成
@@ -29,10 +35,10 @@ Anaconda Prompt を推奨します。
 
 ## 実行方法
 1. [Anaconda](https://www.anaconda.com/)をインストール.
-1. [リリース](https://github.com/kentokura/TicTacToe_py/releases)からバージョンを選んでTicTacToe_pyをダウンロード.
+1. [リリース](XXXXX <!-- https://github.com/kentokura/TicTacToe_py/releases -->)からバージョンを選んでGobbletGobblers_pyをダウンロード.
 1. Anaconda Prompt を実行
 1. Promptに"python "と入力. (行末のスペースを忘れずに!)
-1. ダウンロードしたTicTacToe_pyから、main.pyをAnaconda Promptにドラック&ドロップしてください.
+1. ダウンロードしたGobbletGobblers_pyから、main.pyをAnaconda Promptにドラック&ドロップしてください.
 1. Promptは以下のようになっているはずです。
    ~~~
    phtyon [パス]/main.py
