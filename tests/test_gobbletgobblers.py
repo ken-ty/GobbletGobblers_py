@@ -150,37 +150,36 @@ class TestState(unittest.TestCase):
         patterns = [
             # 0つ
             ([0, 0, 0, 0, 0, 0, 0, 0, 0], 0),
-            # xx_xx_piece
-            # ---
-            # ---
-            # ---
+            # piece
+            #  ---
+            #  ---
+            #  ---
 
             # 1つ
             ([1, 0, 0, 0, 0, 0, 0, 0, 0], 1),
-            # xx_xx_piece
-            # o--
-            # ---
-            # ---
+            # piece
+            #  o--
+            #  ---
+            #  ---
 
             # 2つ
             ([0, 0, 1, 0, 1, 0, 0, 0, 0], 2),
-            # xx_xx_piece
-            # --o
-            # -o-
-            # ---
+            # piece
+            #  --o
+            #  -o-
+            #  ---
 
             # 9つ
             ([1, 1, 1, 1, 1, 1, 1, 1, 1], 9),
-            # xx_xx_piece
-            # ooo
-            # ooo
-            # ooo
+            # piece
+            #  ooo
+            #  ooo
+            #  ooo
         ]
-
         for input_param, expect_param in patterns:
             pieces = input_param
             state = game.State()
-            expect = expect_param  # expect_param == num of pieces
+            expect = expect_param  # num of pieces
             actual = state.piece_count(pieces)
             self.assertEqual(expect, actual)
 
@@ -409,7 +408,7 @@ class TestState(unittest.TestCase):
         for input_param, expect_param in patterns:
             my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
             state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
-            expect = expect_param  # is_lose()
+            expect = expect_param  # True or False
             actual = state.is_lose()
             self.assertEqual(expect, actual)
 
@@ -424,109 +423,193 @@ class TestState(unittest.TestCase):
     def test___str__(self):
         patterns = [
             # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   ---
             ((None, None, None, None),
-             " small\n"  # small
-             "  ---\n"  # ---
-             "  ---\n"  # ---
-             "  ---\n  "  # ---
-             "\r large\n"  # large
-             "  ---\n"  # ---
-             "  ---\n"  # ---
-             "  ---\n  "  # ---
-             "\r   ↓\n\n"  # ↓
-
-             "visible\n"  # visible
-             "  ---\n"  # ---
-             "  ---\n"  # ---
-             "  ---\n  "),  # ---
+             " small\n"
+             "  ---\n"
+             "  ---\n"
+             "  ---\n  "
+             "\r large\n"
+             "  ---\n"
+             "  ---\n"
+             "  ---\n  "
+             "\r   ↓\n"
+             "\n"
+             "visible\n"
+             "  ---\n"
+             "  ---\n"
+             "  ---\n  "),
 
             # smallのみ
+            #  small
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ---
+            #   ---
             (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], None, None),
-             " small\n"  # small
-             "  ox-\n"  # ox-
-             "  ---\n"  # ---
-             "  ---\n  "  # ---
-             "\r large\n"  # large
-             "  ---\n"  # ---
-             "  ---\n"  # ---
-             "  ---\n  "  # ---
-             "\r   ↓\n\n"  # ↓
-
-             "visible\n"  # visible
-             "  ox-\n"  # ox-
-             "  ---\n"  # ---
-             "  ---\n  "),  # ---
+             " small\n"
+             "  ox-\n"
+             "  ---\n"
+             "  ---\n  "
+             "\r large\n"
+             "  ---\n"
+             "  ---\n"
+             "  ---\n  "
+             "\r   ↓\n"
+             "\n"
+             "visible\n"
+             "  ox-\n"
+             "  ---\n"
+             "  ---\n  "),
 
             # largeのみ
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ox-
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ---
+            #   ---
             ((None, None, [1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0]),
-             " small\n"  # small
-             "  ---\n"  # ---
-             "  ---\n"  # ---
-             "  ---\n  "  # ---
-             "\r large\n"  # large
-             "  ox-\n"  # ox-
-             "  ---\n"  # ---
-             "  ---\n  "  # ---
-             "\r   ↓\n\n"  # ↓
-
-             "visible\n"  # visible
-             "  ox-\n"  # ox-
-             "  ---\n"  # ---
-             "  ---\n  "),  # ---
+             " small\n"
+             "  ---\n"
+             "  ---\n"
+             "  ---\n  "
+             "\r large\n"
+             "  ox-\n"
+             "  ---\n"
+             "  ---\n  "
+             "\r   ↓\n"
+             "\n"
+             "visible\n"
+             "  ox-\n"
+             "  ---\n"
+             "  ---\n  "),
 
             # small, large重なりなし
+            #  small
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ox-
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ox-
+            #   ---
             (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 1, 0, 0, 0, 0]),
-             " small\n"  # small
-             "  ox-\n"  # ox-
-             "  ---\n"  # ---
-             "  ---\n  "  # ---
-             "\r large\n"  # large
-             "  ---\n"  # ---
-             "  ox-\n"  # ox-
-             "  ---\n  "  # ---
-             "\r   ↓\n\n"  # ↓
-
-             "visible\n"  # visible
-             "  ox-\n"  # ox-
-             "  ox-\n"  # ox-
-             "  ---\n  "),  # ---
+             " small\n"
+             "  ox-\n"
+             "  ---\n"
+             "  ---\n  "
+             "\r large\n"
+             "  ---\n"
+             "  ox-\n"
+             "  ---\n  "
+             "\r   ↓\n"
+             "\n"
+             "visible\n"
+             "  ox-\n"
+             "  ox-\n"
+             "  ---\n  "),
 
             # small, large重なりあり
+            #  small
+            #   ox-
+            #   ---
+            #   ox-
+            #  large
+            #   ---
+            #   ox-
+            #   ox-
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ox-
+            #   ox-
             (([1, 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0],
               [0, 0, 0, 0, 1, 0, 0, 1, 0]),
-             " small\n"  # small
-             "  ox-\n"  # ox-
-             "  ---\n"  # ---
-             "  ox-\n  "  # ox-
-             "\r large\n"  # large
-             "  ---\n"  # ---
-             "  ox-\n"  # ox-
-             "  ox-\n  "  # ox-
-             "\r   ↓\n\n"  # ↓
-
-             "visible\n"  # visible
-             "  ox-\n"  # ox-
-             "  ox-\n"  # ox-
-             "  ox-\n  "),  # ox-
+             " small\n"
+             "  ox-\n"
+             "  ---\n"
+             "  ox-\n  "
+             "\r large\n"
+             "  ---\n"
+             "  ox-\n"
+             "  ox-\n  "
+             "\r   ↓\n"
+             "\n"
+             "visible\n"
+             "  ox-\n"
+             "  ox-\n"
+             "  ox-\n  "),
 
             # small, large重なりあり色重なり
+            #  small
+            #   oxo
+            #   --x
+            #   ox-
+            #  large
+            #   --o
+            #   oxx
+            #   ox-
+            #    ↓
+            #
+            # visible
+            #   oxo
+            #   oxx
+            #   ox-
             (([1, 0, 1, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 1, 0, 1, 0], [0, 0, 1, 1, 0, 0, 1, 0, 0],
               [0, 0, 0, 0, 1, 1, 0, 1, 0]),
-             " small\n"  # small
-             "  oxo\n"  # ox-
-             "  --x\n"  # ---
-             "  ox-\n  "  # ox-
-             "\r large\n"  # large
-             "  --o\n"  # ---
-             "  oxx\n"  # ox-
-             "  ox-\n  "  # ox-
-             "\r   ↓\n\n"  # ↓
-
-             "visible\n"  # visible
-             "  oxo\n"  # ox-
-             "  oxx\n"  # ox-
-             "  ox-\n  "),  # ox-
+             " small\n"
+             "  oxo\n"
+             "  --x\n"
+             "  ox-\n  "
+             "\r large\n"
+             "  --o\n"
+             "  oxx\n"
+             "  ox-\n  "
+             "\r   ↓\n"
+             "\n"
+             "visible\n"
+             "  oxo\n"
+             "  oxx\n"
+             "  ox-\n  "),
         ]
         for input_param, expect_param in patterns:
             my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
@@ -537,12 +620,13 @@ class TestState(unittest.TestCase):
 
     # 合法手探索のテスト
     # - 空いているマスにはおける
-    # - 同じ大きさのコマがあるところにはおけない
-    # - largeがある重なったマスにsmallはおけない
-    # - smallがある重なったマスにlargeはおける
+    # - 同じ大きさのコマがあるところにはおけない(small)
+    # - 同じ大きさのコマがあるところにはおけない(large)
+    # - largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりなし)
+    # -  largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりあり)
     def test_legal_actions(self):
         patterns = [
-            ((None, None, None, None), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]),
+            # 空いているマスにはおける
             #  small
             #   ---
             #   ---
@@ -557,16 +641,33 @@ class TestState(unittest.TestCase):
             #   ---
             #   ---
             #   ---
+            ((None, None, None, None), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]),
 
-            # smallのみ
+            # 同じ大きさのコマがあるところにはおけない(small)
+            #  small
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ---
+            #   ---
             (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], None, None),
              [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]),
+
+            # 同じ大きさのコマがあるところにはおけない(large)
             #  small
-            #   ox-
+            #   ---
             #   ---
             #   ---
             #  large
-            #   ---
+            #   ox-
             #   ---
             #   ---
             #    ↓
@@ -575,45 +676,27 @@ class TestState(unittest.TestCase):
             #   ox-
             #   ---
             #   ---
-
-            # largeのみ
             ((None, None, [1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0]),
              [2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17]),
-            #  small
-            #   ---
+
+            # largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりなし)
+            #   ox-
             #   ---
             #   ---
             #  large
-            #   ox-
             #   ---
+            #   ox-
             #   ---
             #    ↓
             #
             # visible
             #   ox-
+            #   ox-
             #   ---
-            #   ---
-
-            # small, large重なりなし
             (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 1, 0, 0, 0, 0]), [2, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17]),
-            #   ox-
-            #   ---
-            #   ---
-            #  large
-            #   ---
-            #   ox-
-            #   ---
-            #    ↓
-            #
-            # visible
-            #   ox-
-            #   ox-
-            #   ---
 
-            # small, large重なりあり
-            (([1, 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0],
-              [0, 0, 0, 0, 1, 0, 0, 1, 0]), [2, 5, 8, 9, 10, 11, 14, 17])
+            # largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりあり)
             #  small
             #   ox-
             #   ---
@@ -628,6 +711,8 @@ class TestState(unittest.TestCase):
             #   ox-
             #   ox-
             #   ox-
+            (([1, 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0],
+              [0, 0, 0, 0, 1, 0, 0, 1, 0]), [2, 5, 8, 9, 10, 11, 14, 17])
         ]
         for input_param, expect_param in patterns:
             my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
