@@ -4,7 +4,7 @@ import gobbletgobblers as game
 
 
 class TestState(unittest.TestCase):
-    # 初期化がちゃんとできているか
+    # 初期化のテスト
     # 以下の条件で正しく初期化ができる
     #   - 空
     #   - smallのみ
@@ -15,11 +15,27 @@ class TestState(unittest.TestCase):
     def test___init__(self):
         patterns = [
             # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   ---
             ((None, None, None, None),
              ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0])),
+
+            # smallのみ
             #  small
-            #   ---
+            #   ox-
             #   ---
             #   ---
             #  large
@@ -29,116 +45,75 @@ class TestState(unittest.TestCase):
             #    ↓
             #
             # visible
+            #   ox-
             #   ---
             #   ---
-            #   ---
-
-            # smallのみ
             (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 0, 0, 0]),
              ([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0])),
-            #  small
-            #   ox-
-            #   ---
-            #   ---
-            #  large
-            #   ---
-            #   ---
-            #   ---
-            #    ↓
-            #
-            # visible
-            #   ox-
-            #   ---
-            #   ---
-
-            # smallのみ
-            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0]),
-             ([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0])),
-            #  small
-            #   ox-
-            #   ---
-            #   ---
-            #  large
-            #   ---
-            #   ---
-            #   ---
-            #    ↓
-            #
-            # visible
-            #   ox-
-            #   ---
-            #   ---
 
             # largeのみ
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ox-
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ---
+            #   ---
             (([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0, 0],
               [0, 1, 0, 0, 0, 0, 0, 0, 0]),
              ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 1, 0, 0, 0, 0, 0, 0, 0],
-              [1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0])),
+              [0, 1, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0])),
+
+            # small, large重なりなし
             #  small
-            #   ---
+            #   ox-
             #   ---
             #   ---
             #  large
-            #   ox-
             #   ---
+            #   ox-
             #   ---
             #    ↓
             #
             # visible
             #   ox-
+            #   ox-
             #   ---
-            #   ---
-
-            # small, large重なりなし
             (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 1, 0, 0, 0, 0]),
              ([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 1, 0, 0, 0, 0], [1, 0, 0, 1, 0, 0, 0, 0, 0], [0, 1, 0, 0, 1, 0, 0, 0, 0])),
+
+            # small, large重なりあり
             #  small
             #   ox-
             #   ---
-            #   ---
+            #   ox-
             #  large
             #   ---
             #   ox-
-            #   ---
+            #   ox-
             #    ↓
             #
             # visible
             #   ox-
             #   ox-
-            #   ---
-
-            # small, large重なりあり
+            #   ox-
             (([1, 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0],
               [0, 0, 0, 0, 1, 0, 0, 1, 0]),
              ([1, 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0],
               [0, 0, 0, 0, 1, 0, 0, 1, 0], [1, 0, 0, 1, 0, 0, 1, 0, 0], [0, 1, 0, 0, 1, 0, 0, 1, 0])),
-            #  small
-            #   ox-
-            #   ---
-            #   ox-
-            #  large
-            #   ---
-            #   ox-
-            #   ox-
-            #    ↓
-            #
-            # visible
-            #   ox-
-            #   ox-
-            #   ox-
 
             # # small, large重なりあり色重なり
-            (([1, 0, 1, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 1, 0, 1, 0], [0, 0, 1, 1, 0, 0, 1, 0, 0],
-              [0, 0, 0, 0, 1, 1, 0, 1, 0]),
-             ([1, 0, 1, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 1, 0, 1, 0], [0, 0, 1, 1, 0, 0, 1, 0, 0],
-              [0, 0, 0, 0, 1, 1, 0, 1, 0], [1, 0, 1, 1, 0, 0, 1, 0, 0], [0, 1, 0, 0, 1, 1, 0, 1, 0])),
             #  small
             #   oxo
             #   --x
@@ -153,7 +128,10 @@ class TestState(unittest.TestCase):
             #   oxo
             #   oxx
             #   ox-
-
+            (([1, 0, 1, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 1, 0, 1, 0], [0, 0, 1, 1, 0, 0, 1, 0, 0],
+              [0, 0, 0, 0, 1, 1, 0, 1, 0]),
+             ([1, 0, 1, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 1, 0, 1, 0], [0, 0, 1, 1, 0, 0, 1, 0, 0],
+              [0, 0, 0, 0, 1, 1, 0, 1, 0], [1, 0, 1, 1, 0, 0, 1, 0, 0], [0, 1, 0, 0, 1, 1, 0, 1, 0])),
         ]
         for input_param, expect_param in patterns:
             my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
@@ -162,7 +140,280 @@ class TestState(unittest.TestCase):
             actual = state.my_small_pieces, state.enemy_small_pieces, state.my_large_pieces, state.enemy_large_pieces, state.my_visible_pieces, state.enemy_visible_pieces
             self.assertEqual(expect, actual)
 
-    # 表示がちゃんとできているか
+    # コマのカウントのテスト
+    # 以下の条件で正しくカウントができる
+    # - 0つ
+    # - 1つ
+    # - 2つ
+    # - 9つ
+    def test_piece_count(self):
+        patterns = [
+            # 0つ
+            ([0, 0, 0, 0, 0, 0, 0, 0, 0], 0),
+            # xx_xx_piece
+            # ---
+            # ---
+            # ---
+
+            # 1つ
+            ([1, 0, 0, 0, 0, 0, 0, 0, 0], 1),
+            # xx_xx_piece
+            # o--
+            # ---
+            # ---
+
+            # 2つ
+            ([0, 0, 1, 0, 1, 0, 0, 0, 0], 2),
+            # xx_xx_piece
+            # --o
+            # -o-
+            # ---
+
+            # 9つ
+            ([1, 1, 1, 1, 1, 1, 1, 1, 1], 9),
+            # xx_xx_piece
+            # ooo
+            # ooo
+            # ooo
+        ]
+
+        for input_param, expect_param in patterns:
+            pieces = input_param
+            state = game.State()
+            expect = expect_param  # expect_param == num of pieces
+            actual = state.piece_count(pieces)
+            self.assertEqual(expect, actual)
+
+    # 勝敗判定のテスト
+    # 以下の条件で正しく負けを判定できる
+    # - visible上で(ここではsmallで)
+    #   - 負けていない(空)
+    #   - 負けていない(oなし、x揃わず)
+    #   - 負けていない(o,x揃わず)
+    #   - 勝っている(oが揃う,x揃わず=負けていない)
+    #   - 縦並び(0,3,6)
+    #   - 縦並び(1,4,7)
+    #   - 縦並び(2,5,8)
+    #   - 横並び(0,1,2)
+    #   - 横並び2(3,4,5)
+    #   - 横並び3(6,7,8)
+    #   - 斜め並び1(0,4,8)
+    #   - 斜め並び2(2,4,6)
+    def test_is_lose(self):
+        patterns = [
+            # 負けていない(空)
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   ---
+            ((None, None, None, None), False),
+
+            # 負けていない(oなし、x揃わず)
+            #  small
+            #   -x-
+            #   x-x
+            #   -x-
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   -x-
+            #   x-x
+            #   -x-
+            (([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 1, 0, 1, 0, 1, 0], None, None), False),
+
+            # 負けていない(o,x揃わず)
+            #  small
+            #   xox
+            #   xox
+            #   oxo
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   xox
+            #   xox
+            #   oxo
+            (([0, 1, 0, 0, 1, 0, 1, 0, 1], [1, 0, 1, 1, 0, 1, 0, 1, 0], None, None), False),
+
+            # 勝っている(oが揃う,x揃わず=負けていない)
+            #  small
+            #   xox
+            #   ooo
+            #   xox
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #  small
+            #   xox
+            #   ooo
+            #   xox
+            (([0, 1, 0, 1, 1, 1, 0, 1, 0], [1, 0, 1, 0, 0, 0, 1, 0, 1], None, None), False),
+
+            # 縦並び(0,3,6)
+            #  small
+            #   x--
+            #   x--
+            #   x--
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   x--
+            #   x--
+            #   x--
+            ((None, [1, 0, 0, 1, 0, 0, 1, 0, 0], None, None), True),
+
+            # 縦並び(1,4,7)
+            #  small
+            #   -x-
+            #   -x-
+            #   -x-
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   -x-
+            #   -x-
+            #   -x-
+            ((None, [0, 1, 0, 0, 1, 0, 0, 1, 0], None, None), True),
+
+            # 縦並び(2,5,8)
+            #  small
+            #   --x
+            #   --x
+            #   --x
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   --x
+            #   --x
+            #   --x
+            ((None, [0, 0, 1, 0, 0, 1, 0, 0, 1], None, None), True),
+
+            # 横並び(0,1,2)
+            #  small
+            #   xxx
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   xxx
+            #   ---
+            #   ---
+            ((None, [1, 1, 1, 0, 0, 0, 0, 0, 0], None, None), True),
+
+            # 横並び(3,4,5)
+            #  small
+            #   ---
+            #   xxx
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   xxx
+            #   ---
+            ((None, [0, 0, 0, 1, 1, 1, 0, 0, 0], None, None), True),
+
+            # 横並び(6,7,8)
+            #  small
+            #   ---
+            #   ---
+            #   xxx
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   xxx
+            ((None, [0, 0, 0, 0, 0, 0, 1, 1, 1], None, None), True),
+
+            # 斜め並び1(0,4,8)
+            #  small
+            #   x--
+            #   -x-
+            #   --x
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   x--
+            #   -x-
+            #   --x
+            ((None, [1, 0, 0, 0, 1, 0, 0, 0, 1], None, None), True),
+
+            # 斜め並び2(2,4,6)
+            #  small
+            #   --x
+            #   -x-
+            #   x--
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   --x
+            #   -x-
+            #   x--
+            ((None, [0, 0, 1, 0, 1, 0, 1, 0, 0], None, None), True),
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # is_lose()
+            actual = state.is_lose()
+            self.assertEqual(expect, actual)
+
+    # 表示のテスト
     # 以下の条件で正しく表示ができる
     #   - 空
     #   - smallのみ
@@ -284,7 +535,7 @@ class TestState(unittest.TestCase):
             actual = str(state)
             self.assertEqual(expect, actual)
 
-    # 合法手
+    # 合法手探索のテスト
     # - 空いているマスにはおける
     # - 同じ大きさのコマがあるところにはおけない
     # - largeがある重なったマスにsmallはおけない
