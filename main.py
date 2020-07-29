@@ -1,5 +1,6 @@
 import gobbletgobblers as game  # クラスStateを定義.
 import player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
+import networkx as nx
 
 # パラメータ
 EP_GAME_COUNT = 1  # 1評価当たりのゲーム数
@@ -19,6 +20,18 @@ def play(action_modes):
     """
     # 3目並べの状態を保持するクラス"State"を初期化する。
     state = game.State()
+    G = nx.DiGraph()
+    # コマの位置をタプルでノードに加える
+    G.add_node((tuple(state.my_small_pieces), tuple(state.enemy_small_pieces), tuple(state.my_large_pieces),
+                tuple(state.enemy_large_pieces)))
+    print("number of nodes:", G.number_of_nodes())
+    print(G.nodes())
+    print("number of edges:", G.number_of_edges())
+    print(G.edges())
+    print("sparse adjacency matrix:")
+    print(nx.adjacency_matrix(G))
+    print("dence adjacency matrix:")
+    print(nx.adjacency_matrix(G).todense())
 
     # ゲーム終了までループ。（Stateクラスのis_doneで確認）
     while not state.is_done():
@@ -30,6 +43,10 @@ def play(action_modes):
         state = state.next(action)
 
         print(state)
+        print()
+        G.add_node((tuple(state.my_small_pieces), tuple(state.enemy_small_pieces), tuple(state.my_large_pieces),
+                    tuple(state.enemy_large_pieces)))
+        print(G.nodes())
         print()
 
     # 先手プレイヤーのポイントを返す
@@ -71,9 +88,14 @@ def evaluate_algorithm_of(label, action_modes):
 
 
 # ミニマックスVSミニマックス
-action_modes = ("MiniMax", "MiniMax")
-evaluate_algorithm_of('MiniMax_VS_MiniMax {:.3f}', action_modes)
+# action_modes = ("MiniMax", "MiniMax")
+# evaluate_algorithm_of('MiniMax_VS_MiniMax {:.3f}', action_modes)
 
-# # ミニマックスVSランダム
+# ミニマックスVSランダム
 # action_modes = ("MiniMax", "Random")
 # evaluate_algorithm_of('MiniMax_VS_Random {:.3f}', action_modes)
+
+
+# ランダムVSランダム
+action_modes = ("Random", "Random")
+evaluate_algorithm_of('Random_VS_Random {:.3f}', action_modes)

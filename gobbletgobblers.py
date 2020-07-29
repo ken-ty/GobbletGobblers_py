@@ -120,7 +120,7 @@ class State:
       bool: 引き分けならTrue, そうでないならFalse.
     """
         return self.piece_count(self.my_small_pieces) + self.piece_count(self.enemy_small_pieces) + self.piece_count(
-            self.my_large_pieces) + self.piece_count(self.enemy_large_pieces) == 9
+            self.my_large_pieces) + self.piece_count(self.enemy_large_pieces) >= 9
 
     def is_done(self):
         """ゲーム終了判定
@@ -186,6 +186,47 @@ class State:
     """
         return self.piece_count(self.my_small_pieces) + self.piece_count(self.my_large_pieces) == self.piece_count(
             self.enemy_small_pieces) + self.piece_count(self.enemy_large_pieces)
+
+    def get_pieces_for_tuple(self):
+        """piecesを返す
+
+    Returns:
+      tuple: (my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+    """
+        my_small_pieces = tuple(self.my_small_pieces)
+        enemy_small_pieces = tuple(self.enemy_small_pieces)
+        my_large_pieces = tuple(self.my_large_pieces)
+        enemy_large_pieces = tuple(self.enemy_large_pieces)
+        pieces = (my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+        return pieces
+
+    def get_pieces_for_binary(self):
+        """piecesを返す
+
+    Returns:
+      int : my_small_pieces[0] ... enemy_large_pieces[8]までをbitで並べた値
+        具体例: 0b_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000 (空の時)
+    """
+        def convert_binary(pieces):
+            """xx_xx_piecesを受け取り、0b000_000_000の形に変換する
+
+        Returns:
+          int : xx_xx_pieces[0] ... xx_xx_pieces[8]までをbitで並べた値
+            具体例: 0b_000_000_000 (空の時)
+        """
+            concert_binary_pieces = 0
+            for i in range(9):
+                concert_binary_pieces += pieces[i] * (2 ** i)
+            return concert_binary_pieces
+
+        binary_pieces = 0
+        pieces = []
+        for i, xx_xx_pieces in enumerate([self.enemy_large_pieces, self.my_large_pieces, self.enemy_small_pieces,
+                                          self.my_small_pieces]):
+            pieces.append(convert_binary(xx_xx_pieces))
+        for i, convert_xx_xx_pieces in enumerate(pieces):
+            binary_pieces = binary_pieces + (convert_xx_xx_pieces << 9 * i)
+        return binary_pieces
 
     def __str__(self):
         """文字列表示

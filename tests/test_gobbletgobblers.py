@@ -412,6 +412,389 @@ class TestState(unittest.TestCase):
             actual = state.is_lose()
             self.assertEqual(expect, actual)
 
+    # 引き分け判定のテスト
+    # 以下の条件で正しく引き分けを判定できる
+    # - 使用されたコマの合計が9つより少ない(引き分けじゃない)
+    #   - 空
+    #   - 8つ
+    # - 使用されたコマの合計が9つ以上(引き分け)
+    #   - 9つ
+    #   - 10つ
+    def test_is_draw(self):
+        patterns = [
+            # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   ---
+            ((None, None, None, None), False),
+
+            # 8つ
+            #  small
+            #   oxo
+            #   x-x
+            #   oxo
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   oxo
+            #   x-x
+            #   oxo
+            (([1, 0, 1, 0, 0, 0, 1, 0, 1], [0, 1, 0, 1, 0, 1, 0, 1, 0], None, None), False),
+
+            # 9つ
+            #  small
+            #   xox
+            #   oox
+            #   xxo
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   xox
+            #   oox
+            #   xxo
+            (([0, 1, 0, 1, 1, 0, 0, 0, 1], [1, 0, 1, 0, 0, 1, 1, 1, 0], None, None), True),
+
+            # 10つ
+            #  small
+            #   xox
+            #   oox
+            #   xxo
+            #  large
+            #   ---
+            #   -o-
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   xox
+            #   oox
+            #   xxo
+            (([0, 1, 0, 1, 1, 0, 0, 0, 1], [1, 0, 1, 0, 0, 1, 1, 1, 0], [0, 0, 0, 0, 1, 0, 0, 0, 0], None), True),
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # True or False
+            actual = state.is_done()
+            self.assertEqual(expect, actual)
+
+    # 合法手探索のテスト
+    # - 空いているマスにはおける
+    # - 同じ大きさのコマがあるところにはおけない(small)
+    # - 同じ大きさのコマがあるところにはおけない(large)
+    # - largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりなし)
+    # -  largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりあり)
+    def test_legal_actions(self):
+        patterns = [
+            # 空いているマスにはおける
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   ---
+            ((None, None, None, None), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]),
+
+            # 同じ大きさのコマがあるところにはおけない(small)
+            #  small
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ---
+            #   ---
+            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], None, None),
+             [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]),
+
+            # 同じ大きさのコマがあるところにはおけない(large)
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ox-
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ---
+            #   ---
+            ((None, None, [1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0]),
+             [2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17]),
+
+            # largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりなし)
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ox-
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ox-
+            #   ---
+            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 1, 0, 0, 0, 0]), [2, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17]),
+
+            # largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりあり)
+            #  small
+            #   ox-
+            #   ---
+            #   ox-
+            #  large
+            #   ---
+            #   ox-
+            #   ox-
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ox-
+            #   ox-
+            (([1, 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0],
+              [0, 0, 0, 0, 1, 0, 0, 1, 0]), [2, 5, 8, 9, 10, 11, 14, 17])
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # expect_param == [0, 1, 2, 3, ... , 16, 17]
+            actual = state.legal_actions()
+            self.assertEqual(expect, actual)
+
+    # my_xx_piece, enemy_xx_piece (visible除く)をタプルで取得する関数のテスト
+    # 空
+    # small, large それぞれのコマあり
+    def test_get_pieces_for_tuple(self):
+        patterns = [
+            # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   ---
+            ((None, None, None, None),
+             ((0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0),
+              (0, 0, 0, 0, 0, 0, 0, 0, 0))),
+
+            # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   ---
+            ((None, None, None, None),
+             ((0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0, 0),
+              (0, 0, 0, 0, 0, 0, 0, 0, 0))),
+
+            # small, large それぞれのコマあり
+            #  small
+            #   o-x
+            #   o-x
+            #   ---
+            #  large
+            #   ---
+            #   x-o
+            #   x-o
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   x-o
+            #   x-o
+            (([1, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 1],
+              [0, 0, 0, 1, 0, 0, 1, 0, 0]),
+             ((1, 0, 0, 1, 0, 0, 0, 0, 0), (0, 0, 1, 0, 0, 1, 0, 0, 0), (0, 0, 0, 0, 0, 1, 0, 0, 1),
+              (0, 0, 0, 1, 0, 0, 1, 0, 0))),
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # expect_param == string
+            actual = state.get_pieces_for_tuple()
+            self.assertEqual(expect, actual)
+
+    # get_pieces_for_binaryのテスト
+    # 以下の条件で適切にビット変換できているか確かめる
+    # - 空
+    # - my_small_piecesで構成される盤面
+    # - enemy_small_piecesで構成される盤面
+    # - my_large_piecesで構成される盤面
+    # - enemy_large_piecesで構成される盤面
+    # - my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_piecesで構成される盤面
+    def test_get_pieces_for_binary(self):
+        patterns = [
+            # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   ---
+            #   ---
+            #   ---
+            ((None, None, None, None), 0),
+
+            # my_small_piecesで構成される盤面
+            #  small
+            #   o--
+            #   oo-
+            #   ooo
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   o--
+            #   oo-
+            #   ooo
+            (([1, 0, 0, 1, 1, 0, 1, 1, 1], [0, 0, 0, 0, 0, 0, 0, 0, 0], None, None),
+             0b111_011_001_000_000_000_000_000_000_000_000_000),
+
+            # enemy_small_piecesで構成される盤面
+            #  small
+            #   x--
+            #   xx-
+            #   xxx
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #    ↓
+            #
+            # visible
+            #   x--
+            #   xx-
+            #   xxx
+            (([0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 1, 1, 0, 1, 1, 1], None, None),
+             0b000_000_000_111_011_001_000_000_000_000_000_000),
+
+            # my_large_piecesで構成される盤面
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   o--
+            #   oo-
+            #   ooo
+            #    ↓
+            #
+            # visible
+            #   o--
+            #   oo-
+            #   ooo
+            (([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 1, 1, 0, 1, 1, 1],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0]), 0b000_000_000_000_000_000_111_011_001_000_000_000),
+
+            # enemy_large_piecesで構成される盤面
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   x--
+            #   xx-
+            #   xxx
+            #    ↓
+            #
+            # visible
+            #   x--
+            #   xx-
+            #   xxx
+            (([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [1, 0, 0, 1, 1, 0, 1, 1, 1]), 0b000_000_000_000_000_000_000_000_000_111_011_001),
+
+            # my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_piecesで構成される盤面
+            #  small
+            #   ox-
+            #   ---
+            #   ox-
+            #  large
+            #   ---
+            #   ox-
+            #   ox-
+            #    ↓
+            #
+            # visible
+            #   ox-
+            #   ox-
+            #   ox-
+            (([1, 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0],
+              [0, 0, 0, 0, 1, 0, 0, 1, 0]), 0b001_000_001_010_000_010_001_001_000_010_010_000),
+
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # bit化した盤面
+            actual = state.get_pieces_for_binary()
+            self.assertEqual(expect, actual)
+
     # 表示のテスト
     # 以下の条件で正しく表示ができる
     #   - 空
@@ -616,109 +999,6 @@ class TestState(unittest.TestCase):
             state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
             expect = expect_param  # expect_param == string
             actual = str(state)
-            self.assertEqual(expect, actual)
-
-    # 合法手探索のテスト
-    # - 空いているマスにはおける
-    # - 同じ大きさのコマがあるところにはおけない(small)
-    # - 同じ大きさのコマがあるところにはおけない(large)
-    # - largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりなし)
-    # -  largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりあり)
-    def test_legal_actions(self):
-        patterns = [
-            # 空いているマスにはおける
-            #  small
-            #   ---
-            #   ---
-            #   ---
-            #  large
-            #   ---
-            #   ---
-            #   ---
-            #    ↓
-            #
-            # visible
-            #   ---
-            #   ---
-            #   ---
-            ((None, None, None, None), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]),
-
-            # 同じ大きさのコマがあるところにはおけない(small)
-            #  small
-            #   ox-
-            #   ---
-            #   ---
-            #  large
-            #   ---
-            #   ---
-            #   ---
-            #    ↓
-            #
-            # visible
-            #   ox-
-            #   ---
-            #   ---
-            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], None, None),
-             [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]),
-
-            # 同じ大きさのコマがあるところにはおけない(large)
-            #  small
-            #   ---
-            #   ---
-            #   ---
-            #  large
-            #   ox-
-            #   ---
-            #   ---
-            #    ↓
-            #
-            # visible
-            #   ox-
-            #   ---
-            #   ---
-            ((None, None, [1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0]),
-             [2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17]),
-
-            # largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりなし)
-            #   ox-
-            #   ---
-            #   ---
-            #  large
-            #   ---
-            #   ox-
-            #   ---
-            #    ↓
-            #
-            # visible
-            #   ox-
-            #   ox-
-            #   ---
-            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 1, 0, 0, 0, 0]), [2, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17]),
-
-            # largeがあるマスにsmallはおけない, smallがあるマスにlargeはおける(small, large重なりあり)
-            #  small
-            #   ox-
-            #   ---
-            #   ox-
-            #  large
-            #   ---
-            #   ox-
-            #   ox-
-            #    ↓
-            #
-            # visible
-            #   ox-
-            #   ox-
-            #   ox-
-            (([1, 0, 0, 0, 0, 0, 1, 0, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0], [0, 0, 0, 1, 0, 0, 1, 0, 0],
-              [0, 0, 0, 0, 1, 0, 0, 1, 0]), [2, 5, 8, 9, 10, 11, 14, 17])
-        ]
-        for input_param, expect_param in patterns:
-            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
-            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
-            expect = expect_param  # expect_param == [0, 1, 2, 3, ... , 16, 17]
-            actual = state.legal_actions()
             self.assertEqual(expect, actual)
 
 
