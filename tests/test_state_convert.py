@@ -325,7 +325,6 @@ class TestSymmetryPiecesState(unittest.TestCase):
     # 時計回りに90度回転したStateを作成
     # - 空
     # - コマあり1
-    # - コマあり2
     def test_rotate90_state(self):
         patterns = [
             # 空
@@ -385,7 +384,6 @@ class TestSymmetryPiecesState(unittest.TestCase):
     # 時計回りに180度回転したStateを作成
     # - 空
     # - コマあり1
-    # - コマあり2
     def test_rotate180_state(self):
         patterns = [
             # 空
@@ -445,7 +443,6 @@ class TestSymmetryPiecesState(unittest.TestCase):
     # 時計回りに270度回転したStateを作成
     # - 空
     # - コマあり1
-    # - コマあり2
     def test_rotate270_state(self):
         patterns = [
             # 空
@@ -478,21 +475,21 @@ class TestSymmetryPiecesState(unittest.TestCase):
             #   ---
             #  large
             #   ---
-            #   ---
-            #   ---
+            #   x--
+            #   -o-
             #
             #  small
             #   ---
-            #   ---
+            #   x--
             #   o--
             #  large
             #   ---
-            #   ---
-            #   ---
-            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0]),
-             ([0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
-              [0, 0, 0, 0, 0, 0, 0, 0, 0])),
+            #   --o
+            #   -x-
+            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 1, 0, 0, 0, 0, 0]),
+             ([0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 1, 0])),
 
         ]
         for input_param, expect_param in patterns:
@@ -500,6 +497,246 @@ class TestSymmetryPiecesState(unittest.TestCase):
             state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
             expect = expect_param  # 変換後の盤面をもつstateのxx_xx_pieces
             state = convert.rotate270_state(state)
+            actual = (state.my_small_pieces, state.enemy_small_pieces, state.my_large_pieces, state.enemy_large_pieces)
+            self.assertEqual(expect, actual)
+
+    # 縦に線対称のStateを作成
+    # - 空
+    # - コマあり1
+    def test_vertical_state(self):
+        patterns = [
+            # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            (([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0]),
+             ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0])),
+
+            # コマあり1
+            #  small
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   x--
+            #   -o-
+            #
+            #  small
+            #   -xo
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   --x
+            #   -o-
+            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 1, 0, 0, 0, 0, 0]),
+             ([0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 0, 0, 1, 0, 0, 0])),
+
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # 変換後の盤面をもつstateのxx_xx_pieces
+            state = convert.vertical_state(state)
+            actual = (state.my_small_pieces, state.enemy_small_pieces, state.my_large_pieces, state.enemy_large_pieces)
+            self.assertEqual(expect, actual)
+
+    # 横に線対称のStateを作成
+    # - 空
+    # - コマあり1
+    def test_horizontal_state(self):
+        patterns = [
+            # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            (([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0]),
+             ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0])),
+
+            # コマあり1
+            #  small
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   x--
+            #   -o-
+            #
+            #  small
+            #   ---
+            #   ---
+            #   ox-
+            #  large
+            #   -o-
+            #   x--
+            #   ---
+            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 1, 0, 0, 0, 0, 0]),
+             ([0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 1, 0, 0, 0, 0, 0])),
+
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # 変換後の盤面をもつstateのxx_xx_pieces
+            state = convert.horizontal_state(state)
+            actual = (state.my_small_pieces, state.enemy_small_pieces, state.my_large_pieces, state.enemy_large_pieces)
+            self.assertEqual(expect, actual)
+
+    # 左上から斜めに線対称のStateを作成
+    # - 空
+    # - コマあり1
+    def test_upper_left_state(self):
+        patterns = [
+            # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            (([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0]),
+             ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0])),
+
+            # コマあり1
+            #  small
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   x--
+            #   -o-
+            #
+            #  small
+            #   o--
+            #   x--
+            #   ---
+            #  large
+            #   -x-
+            #   --o
+            #   ---
+            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 1, 0, 0, 0, 0, 0]),
+             ([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1, 0, 0, 0],
+              [0, 1, 0, 0, 0, 0, 0, 0, 0])),
+
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # 変換後の盤面をもつstateのxx_xx_pieces
+            state = convert.upper_left_state(state)
+            actual = (state.my_small_pieces, state.enemy_small_pieces, state.my_large_pieces, state.enemy_large_pieces)
+            self.assertEqual(expect, actual)
+
+    # 右上から斜めに線対称のStateを作成
+    # - 空
+    # - コマあり1
+    def test_upper_right_state(self):
+        patterns = [
+            # 空
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            #
+            #  small
+            #   ---
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   ---
+            #   ---
+            (([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0]),
+             ([0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0])),
+
+            # コマあり1
+            #  small
+            #   ox-
+            #   ---
+            #   ---
+            #  large
+            #   ---
+            #   x--
+            #   -o-
+            #
+            #  small
+            #   ---
+            #   --x
+            #   --o
+            #  large
+            #   ---
+            #   o--
+            #   -x-
+            (([1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0],
+              [0, 0, 0, 1, 0, 0, 0, 0, 0]),
+             ([0, 0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 1, 0])),
+
+        ]
+        for input_param, expect_param in patterns:
+            my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces = input_param
+            state = game.State(my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces)
+            expect = expect_param  # 変換後の盤面をもつstateのxx_xx_pieces
+            state = convert.upper_right_state(state)
             actual = (state.my_small_pieces, state.enemy_small_pieces, state.my_large_pieces, state.enemy_large_pieces)
             self.assertEqual(expect, actual)
 
