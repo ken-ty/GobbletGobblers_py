@@ -127,7 +127,7 @@ def upper_right_state(state):
     return convert_state
 
 
-# 正規化したクラスを作成
+# 正規化したStateを作成
 def normalize_state(state):
     cand_states = [rotate90_state(state), rotate180_state(state), rotate270_state(state), vertical_state(state),
                    horizontal_state(state), upper_left_state(state), upper_right_state(state)]
