@@ -1,3 +1,6 @@
+import state_convert as convert
+
+
 def mini_max(state):
     """ミニマックスで状態の価値を計算する.
 
@@ -16,7 +19,7 @@ def mini_max(state):
     best_score = -float('inf')
     for action in state.legal_actions():
         # NegaMax法
-        score = -mini_max(state.next(action))
+        score = -mini_max(state.next(action, normalize=True))
         if score > best_score:
             best_score = score
     # 合法手の状態価値の最大値を返す

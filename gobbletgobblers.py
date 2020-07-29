@@ -1,3 +1,6 @@
+import state_convert as convert
+
+
 """三目並べの作成
 """
 
@@ -136,7 +139,7 @@ class State:
     """
         return self.is_lose() or self.is_draw()
 
-    def next(self, action):
+    def next(self, action, normalize=False):
         """次の状態の取得
 
     現在の状態stateに選択した行動actionを反映した、
@@ -149,6 +152,7 @@ class State:
 
     Args:
       action (int): 次に置くマスを０～８, ９～１７で指定.
+      normalize (bool): 正規化した状態を返すかどうか.
 
     Returns:
       (enemy_small_pieces, my_small_pieces, enemy_large_pieces, my_large_pieces) (State): 行動を反映させたenemy_xx_pieces, my_xx_piecesを返す.
@@ -160,7 +164,11 @@ class State:
         else:
             my_large_pieces[action - 9] = 1
         # enemy_piecesと更新したmy_piecesを入れ替えてStateを作成.
-        return State(self.enemy_small_pieces, my_small_pieces, self.enemy_large_pieces, my_large_pieces)
+        state = State(self.enemy_small_pieces, my_small_pieces, self.enemy_large_pieces, my_large_pieces)
+        if not normalize:
+            return state
+        elif normalize:
+            return convert.normalize_state(state)
 
     def legal_actions(self):
         """合法手のリストの取得
