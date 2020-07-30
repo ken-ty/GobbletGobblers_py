@@ -88,14 +88,14 @@ def evaluate_algorithm_of(label, action_modes):
 
 
 # ミニマックスVSミニマックス
-# action_modes = ("MiniMax", "MiniMax")
-# evaluate_algorithm_of('MiniMax_VS_MiniMax {:.3f}', action_modes)
+action_modes = ("MiniMax", "MiniMax")
+evaluate_algorithm_of('MiniMax_VS_MiniMax {:.3f}', action_modes)
 
 # ミニマックスVSランダム
 # action_modes = ("MiniMax", "Random")
 # evaluate_algorithm_of('MiniMax_VS_Random {:.3f}', action_modes)
 
 
-# ランダムVSランダム
-action_modes = ("Random", "Random")
-evaluate_algorithm_of('Random_VS_Random {:.3f}', action_modes)
+# # ランダムVSランダム
+# action_modes = ("Random", "Random")
+# evaluate_algorithm_of('Random_VS_Random {:.3f}', action_modes)

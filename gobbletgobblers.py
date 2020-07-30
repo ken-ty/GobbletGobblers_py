@@ -123,7 +123,7 @@ class State:
       bool: 引き分けならTrue, そうでないならFalse.
     """
         return self.piece_count(self.my_small_pieces) + self.piece_count(self.enemy_small_pieces) + self.piece_count(
-            self.my_large_pieces) + self.piece_count(self.enemy_large_pieces) >= 9
+            self.my_large_pieces) + self.piece_count(self.enemy_large_pieces) >= 3
 
     def is_done(self):
         """ゲーム終了判定
