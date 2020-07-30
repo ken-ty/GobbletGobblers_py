@@ -1,3 +1,4 @@
+import gobbletgobblers as game
 import statevalue as value
 import random
 

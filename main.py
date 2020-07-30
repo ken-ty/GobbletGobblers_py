@@ -21,17 +21,9 @@ def play(action_modes):
     # 3目並べの状態を保持するクラス"State"を初期化する。
     state = game.State()
     # グラフの初期化
-    G = nx.DiGraph()
+    # G = nx.DiGraph()
     # コマの位置をbinaryでノードに加える
-    G.add_node(state.get_pieces_for_binary(), label="pieces_for_binary")
-    print("number of nodes:", G.number_of_nodes())
-    print(G.nodes())
-    print("number of edges:", G.number_of_edges())
-    print(G.edges())
-    print("sparse adjacency matrix:")
-    print(nx.adjacency_matrix(G))
-    print("dence adjacency matrix:")
-    print(nx.adjacency_matrix(G).todense())
+    # G.add_node(state.get_pieces_for_binary(), label="pieces_for_binary")
 
     # ゲーム終了までループ。（Stateクラスのis_doneで確認）
     while not state.is_done():
@@ -47,13 +39,13 @@ def play(action_modes):
 
         print(state)
         print()
-        # ノードの追加
-        G.add_node(state.get_pieces_for_binary())
-        # 枝の追加
-        G.add_edge(binary_state, state.get_pieces_for_binary())
+        # # ノードの追加
+        # G.add_node(state.get_pieces_for_binary())
+        # # 枝の追加
+        # G.add_edge(binary_state, state.get_pieces_for_binary())
 
-    # ネットワークの出力
-    nx.readwrite.gml.write_gml(G, "game.mgl")
+    # # ネットワークの出力
+    # nx.readwrite.gml.write_gml(G, "game.mgl")
 
     # 先手プレイヤーのポイントを返す
     return first_player_point(state)
