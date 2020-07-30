@@ -20,10 +20,10 @@ def play(action_modes):
     """
     # 3目並べの状態を保持するクラス"State"を初期化する。
     state = game.State()
+    # グラフの初期化
     G = nx.DiGraph()
-    # コマの位置をタプルでノードに加える
-    G.add_node((tuple(state.my_small_pieces), tuple(state.enemy_small_pieces), tuple(state.my_large_pieces),
-                tuple(state.enemy_large_pieces)))
+    # コマの位置をbinaryでノードに加える
+    G.add_node(state.get_pieces_for_binary(), label="pieces_for_binary")
     print("number of nodes:", G.number_of_nodes())
     print(G.nodes())
     print("number of edges:", G.number_of_edges())
@@ -35,6 +35,9 @@ def play(action_modes):
 
     # ゲーム終了までループ。（Stateクラスのis_doneで確認）
     while not state.is_done():
+        # 行動前の状態のbinary
+        binary_state = state.get_pieces_for_binary()
+
         # 行動の取得
         action_mode = action_modes[0] if state.is_first_player() else action_modes[1]
         action = ai.action(state, action_mode)
@@ -44,10 +47,13 @@ def play(action_modes):
 
         print(state)
         print()
-        G.add_node((tuple(state.my_small_pieces), tuple(state.enemy_small_pieces), tuple(state.my_large_pieces),
-                    tuple(state.enemy_large_pieces)))
-        print(G.nodes())
-        print()
+        # ノードの追加
+        G.add_node(state.get_pieces_for_binary())
+        # 枝の追加
+        G.add_edge(binary_state, state.get_pieces_for_binary())
+
+    # ネットワークの出力
+    nx.readwrite.gml.write_gml(G, "game.mgl")
 
     # 先手プレイヤーのポイントを返す
     return first_player_point(state)
