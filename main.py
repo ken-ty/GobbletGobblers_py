@@ -1,99 +1,15 @@
-import gobbletgobblers as game  # クラスStateを定義.
-import player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
-import networkx as nx
+import evaluate_algorithm
+import generate_node_all
 
-# パラメータ
-EP_GAME_COUNT = 1  # 1評価当たりのゲーム数
-
-
-def first_player_point(ended_state):
-    """先手プレイヤーのポイント
-    """
-    # 1:先手勝利, 0: 先手敗北, 0.5, 引分け
-    if ended_state.is_lose():
-        return 0 if ended_state.is_first_player() else 1
-    return 0.5
-
-
-def play(action_modes):
-    """1ゲームの実行
-    """
-    # 3目並べの状態を保持するクラス"State"を初期化する。
-    state = game.State()
-    # グラフの初期化
-    # G = nx.DiGraph()
-    # コマの位置をbinaryでノードに加える
-    # G.add_node(state.get_pieces_for_binary(), label="pieces_for_binary")
-
-    # ゲーム終了までループ。（Stateクラスのis_doneで確認）
-    while not state.is_done():
-        # 行動前の状態のbinary
-        binary_state = state.get_pieces_for_binary()
-
-        # 行動の取得
-        action_mode = action_modes[0] if state.is_first_player() else action_modes[1]
-        action = ai.action(state, action_mode)
-
-        # 行動を状態に反映させた次の状態に更新する。
-        state = state.next(action)
-
-        print(state)
-        print()
-        # # ノードの追加
-        # G.add_node(state.get_pieces_for_binary())
-        # # 枝の追加
-        # G.add_edge(binary_state, state.get_pieces_for_binary())
-
-    # # ネットワークの出力
-    # nx.readwrite.gml.write_gml(G, "game.mgl")
-
-    # 先手プレイヤーのポイントを返す
-    return first_player_point(state)
-
-
-def evaluate_algorithm_of(label, action_modes):
-    """任意のアルゴリズムの評価
-    """
-    # 複数回の対戦を繰り返す
-    total_point = 0
-    total_win = 0
-    total_lose = 0
-    total_draw = 0
-    point = 0
-    for i in range(EP_GAME_COUNT):
-        # 1ゲームの実行
-        # 交互に先手後手を入れ替えている。
-        if i % 2 == 0:
-            point = play(action_modes)
-        else:
-            point = 1 - play(list(reversed(action_modes)))
-        # win,lose,drawをカウントする
-        total_point += point
-        if point == 1:
-            total_win += 1
-        elif point == 0.5:
-            total_draw += 1
-        elif point == 0:
-            total_lose += 1
-        # 出力
-        print("\rEvaluate {}/{} ".format(i + 1, EP_GAME_COUNT), end='')
-    print('')
-
-    # 平均ポイントの計算
-    average_point = total_point / EP_GAME_COUNT
-    print(label.format(average_point), end='')
-    print(' (win {}, lose {}, draw {})'.format(total_win, total_lose, total_draw))
-
-
-# ミニマックスVSミニマックス
-action_modes = ("MiniMax", "MiniMax")
-evaluate_algorithm_of('MiniMax_VS_MiniMax {:.3f}', action_modes)
-
-# ミニマックスVSランダム
-# action_modes = ("MiniMax", "Random")
-# evaluate_algorithm_of('MiniMax_VS_Random {:.3f}', action_modes)
-
-
-# # ランダムVSランダム
-# action_modes = ("Random", "Random")
-# evaluate_algorithm_of('Random_VS_Random {:.3f}', action_modes)
+print()
+print("何をしますか")
+print("1: ゲームAIの評価")
+print("2: 盤面の列挙")
+print("選択:", end="")
+mode = input()
+if mode not in {"1", "2"}:
+    print("modeが正常に選択されませんでした")
+elif mode == "1":
+    evaluate_algorithm.main()
+elif mode == "2":
+    generate_node_all.main()

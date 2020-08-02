@@ -10,11 +10,11 @@ graph [
   ]
   node [
     id 2
-    label "4198400"
+    label "4160"
   ]
   node [
     id 3
-    label "2147745800"
+    label "294920"
   ]
   edge [
     source 0

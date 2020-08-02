@@ -5,6 +5,42 @@ import state_convert as convert
 """
 
 
+def binary_pieces_to_array(binary_pieces):
+    """binary型のpiecesをarray型にして返す
+
+Returns:
+  int : [my_small_pieces, enemy_small_pieces, my_large_pieces, enemy_large_pieces]
+"""
+    array_pieces = [binary_pieces & 0b111_111_111,
+                    binary_pieces & 0b111_111_111_000_000_000,
+                    binary_pieces & 0b111_111_111_000_000_000_000_000_000,
+                    binary_pieces & 0b111_111_111_000_000_000_000_000_000_000_000_000
+                    ]
+    # for i, convert_xx_xx_pieces in enumerate(pieces):
+    #     binary_pieces = binary_pieces + (convert_binary_to_array << 9 * i)
+
+    # def convert_binary_to_array(binary_pieces):
+    #     """xx_xx_piecesを受け取り、0b000_000_000の形に変換する
+    #
+    # Returns:
+    #   array : xx_xx_pieces[0] ... xx_xx_pieces[8]
+    #     具体例: [0, 0, 0, 0, 0, 0, 0, 0, 0] (空の時)
+    # """
+    #     concert_binary_pieces = 0
+    #     for i in range(9):
+    #         concert_binary_pieces += pieces[i] * (2 ** i)
+    #     return concert_binary_pieces
+    #
+    # binary_pieces = 0
+    # pieces = []
+    # for i, xx_xx_pieces in enumerate([self.enemy_large_pieces, self.my_large_pieces, self.enemy_small_pieces,
+    #                                   self.my_small_pieces]):
+    #     pieces.append(convert_binary_to_array(xx_xx_pieces))
+    # for i, convert_xx_xx_pieces in enumerate(pieces):
+    #     binary_pieces = binary_pieces + (convert_binary_to_array << 9 * i)
+    return array_pieces
+
+
 class State:
     """盤面の状態
 
