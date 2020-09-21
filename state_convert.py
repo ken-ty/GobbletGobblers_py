@@ -129,6 +129,23 @@ def upper_right_state(state):
 
 # 正規化したStateを作成
 def normalize_state(state):
+    """正規化したStateを作成する
+
+    与えられたstateを90°, 180°, 270°回転対称、x軸, y軸対称, y=x, y=-xに線対称なstateを作成し、
+    binaryに置き換えたときに最も小さくなるようなstateに変換する。
+    Args:
+        state: 変換したいコマの配置。
+
+    Returns:
+        state: 正規化したstate
+
+    Examples:
+
+        あらかじめstateを作成しておく。以下のように書くことで、正規化したstateを取得できる。
+        state: 定義ずみのState型変数
+
+        state = convert.normalize_state(state)
+    """
     cand_states = [rotate90_state(state), rotate180_state(state), rotate270_state(state), vertical_state(state),
                    horizontal_state(state), upper_left_state(state), upper_right_state(state)]
     normalized_state = state
@@ -138,3 +155,5 @@ def normalize_state(state):
             normalized_state = cand_state
             binary_normalize_state = cand_state.get_pieces_for_binary()
     return normalized_state
+
+
